@@ -18,10 +18,10 @@ class EmailBuilder:
     
     def build(self, form):
         form = self.EmailForm(
-                type = self.form['type'],
-                email = self.form['email'].strip(),
-                name =  self.form['name'].strip(),
-                message= self.form['message'].strip(),
+                type = form['type'],
+                email = form['email'].strip(),
+                name =  form['name'].strip(),
+                message= form['message'].strip(),
             )
         message = self.Message(
                 subject=f'type: {form.type} from {form.name}',
@@ -37,10 +37,10 @@ class EmailService:
     def __init__(self, emailTransport):
         self.emailTransport = emailTransport
 
-        def send(self,message):
-            try:
-                self.emailService.send(message)
-            except Exception as e:
-                return f"Failed to send email {e}", 500
-            return 'Message was sent succesfully', 200
+    def send(self,message):
+        try:
+            self.emailTransport.send(message)
+        except Exception as e:
+            return f"Failed to send email {e}", 500
+        return 'Message was sent succesfully', 200
        
