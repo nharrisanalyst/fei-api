@@ -15,7 +15,7 @@ from Repositories.suggestion_repository import SuggestionRepository
 from Services.suggestionservice import SuggestionService
 
 from Models.average import DataAvgData
-from Models.email import EmailForm, Email
+from Models.email import EmailForm, EmailService, EmailBuilder
 
 time.sleep(60)
 
@@ -88,14 +88,11 @@ def zipcode_get_all():
 @app.route('/email', methods=['POST'])
 def email_inqueries():
     if request.method == 'POST':
-        email = Email(emailService=mail, form= request.form, Message=Message, EmailForm=EmailForm)
-        try:
-            email.send()
-            return 'Email Was Sent', 200
-        except Exception as e:
-            print(f"Error sending email: {e}")
-            return f"Failed to send email {e} {email_password} {email_name}", 500
-        
+        builder = EmailBuilder(EmailForm=EmailForm, Message=Message)
+        msg = builder.build(request.form)
+        email = EmailService(emailTransport=mail)
+        return email.send(msg)
+    
 @app.route('/searchhelp/cities', methods=['get'])
 def citySearch():
     if request.method == 'GET':
