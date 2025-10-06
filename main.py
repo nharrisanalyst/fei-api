@@ -15,7 +15,7 @@ from Repositories.suggestion_repository import SuggestionRepository
 from Services.suggestionservice import SuggestionService
 
 from Models.average import DataAvgData
-from Models.email import EmailForm
+from Models.email import EmailForm, Email
 
 time.sleep(60)
 
@@ -88,21 +88,9 @@ def zipcode_get_all():
 @app.route('/email', methods=['POST'])
 def email_inqueries():
     if request.method == 'POST':
-        form = EmailForm(
-           type = request.form['type'],
-           email = request.form['email'].strip(),
-           name = request.form['name'].strip(),
-           message = request.form['message'].strip(),
-        )
-        msg = Message(
-            subject=f'type: {form.type} from {form.name}',
-            sender='reachoutatportal@gmail.com',
-            recipients=['reachoutatportal@gmail.com'],
-            date= int(time.time()),
-            body = f' type: {form.type} name:{form.name} email: {form.email} message: {form.message}'
-        )
+        email = Email(emailService=mail, form= request.form, Message=Message, EmailForm=EmailForm)
         try:
-            mail.send(msg)
+            email.send()
             return 'Email Was Sent', 200
         except Exception as e:
             print(f"Error sending email: {e}")
